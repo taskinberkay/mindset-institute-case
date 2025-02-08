@@ -1,0 +1,31 @@
+services:
+  user-management:
+    build: ./user-management
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+
+  customer-management:
+    build: ./customer-management
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+
+  sales-tracking:
+    build: ./sales-tracking
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongo
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"

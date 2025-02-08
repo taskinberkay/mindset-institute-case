@@ -1,0 +1,1 @@
+# mindset-institute-case

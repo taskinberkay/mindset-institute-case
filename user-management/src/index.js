@@ -1,6 +1,5 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const verifyAdmin = require("./middlewares/VerifyAdminMiddleware");
 const router = require("./routes/UserRoutes");
 require("dotenv").config();
 

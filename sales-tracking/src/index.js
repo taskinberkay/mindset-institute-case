@@ -4,9 +4,9 @@ const saleRoutes = require("./routes/SaleRoutes");
 
 const app = express();
 app.use(express.json());
-app.use("/api", saleRoutes);
+app.use("/sales", saleRoutes);
 
-mongoose.connect("mongodb://mongo:27017/saledb", { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect("mongodb://mongo:27017/saledb")
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("MongoDB connection error:", err));
 

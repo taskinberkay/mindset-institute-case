@@ -9,7 +9,7 @@ describe("Customer Service API Tests", () => {
             .post("/users/register")
             .send({
                 name: "Admin User",
-                email: "admin@test.com",
+                email: "customer-manager@test.com",
                 password: "password123",
                 role: "Admin",
             });
@@ -18,7 +18,7 @@ describe("Customer Service API Tests", () => {
 
         const loginResponse = await request(API_GATEWAY_URL)
             .post("/users/login")
-            .send({email: "admin@test.com", password: "password123"});
+            .send({email: "customer-manager@test.com", password: "password123"});
 
         validToken = loginResponse.body.token;
 

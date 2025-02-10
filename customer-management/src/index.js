@@ -4,10 +4,12 @@ const customerRoutes = require('./routes/CustomerRoutes');
 
 const app = express();
 app.use(express.json());
-app.use("/api", customerRoutes);
+app.use("/customers", customerRoutes);
 
-mongoose.connect("mongodb://localhost:27017/customerdb", {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect("mongodb://mongo:27017/customerdb")
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("MongoDB connection error:", err));
 
 app.listen(3001, () => console.log("Customer service running on port 3001"));
+
+module.exports = app;

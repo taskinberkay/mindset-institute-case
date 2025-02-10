@@ -5,7 +5,7 @@ const CustomerSchema = new mongoose.Schema({
     email: { type: String, required: true },
     phone: { type: String, required: true },
     company: { type: String, required: true },
-    notes: { type: String, default: "" },
+    notes: { type: [String], default: [] },
 });
 
 module.exports = mongoose.model("Customer", CustomerSchema);

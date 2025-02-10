@@ -21,6 +21,15 @@ services:
     depends_on:
       - mongo
 
+  customer-management-tests:
+    build: ./customer-management
+    depends_on:
+      - mongo
+      - user-management
+    environment:
+      MONGO_URI: mongodb://mongo:27017/customerdb
+    command: npm test
+
   sales-tracking:
     build: ./sales-tracking
     ports:

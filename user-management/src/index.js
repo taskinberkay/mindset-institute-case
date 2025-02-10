@@ -5,10 +5,6 @@ require("dotenv").config();
 
 const app = express();
 app.use(express.json());
-app.use((req, res, next) => {
-    console.log(`[Gateway] Incoming Request: ${req.method} ${req.originalUrl} ${req.body}`);
-    next();
-});
 app.use("/users", router);
 
 mongoose.connect("mongodb://mongo:27017/userdb")

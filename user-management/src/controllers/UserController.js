@@ -3,12 +3,10 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const register = async (req, res) => {
-    console.log("triggered");
     const {name, email, password, role} = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({name, email, password: hashedPassword, role});
     const savedUser = await user.save();
-    console.log(JSON.stringify(savedUser));
     res.status(201).json({message: "User registered successfully", savedUser});
 };
 
@@ -79,9 +77,6 @@ const update = async (req, res) => {
         }
 
         // Ensure non-admin users can only update their own data
-        console.log(req.headers["x-is-admin"]);
-        console.log(req.headers["x-user-id"]);
-
         if (!req.headers["x-is-admin"]) {
             if (req.headers["x-user-id"] !== String(userId)) {
                 return res.status(403).json({message: "Admin privileges required to update other users' data!"});

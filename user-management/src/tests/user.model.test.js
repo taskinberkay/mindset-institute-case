@@ -21,7 +21,6 @@ describe("User Model", () => {
         };
         const user = new User(userData);
         const savedUser = await user.save();
-        console.log(savedUser);
         expect(savedUser._id).toBeDefined();
         expect(savedUser.name).toBe(userData.name);
         expect(savedUser.email).toBe(userData.email);

@@ -108,4 +108,27 @@ const update = async (req, res) => {
     }
 };
 
-module.exports = {register, login, findById, findByParams, update};
+const deleteUser = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const isAdmin = req.headers["x-is-admin"];
+        const requesterId = req.headers["x-user-id"];
+
+        if (!isAdmin && requesterId !== id) {
+            return res.status(403).json({error: "Forbidden: You can only delete your own account"});
+        }
+
+        const deletedUser = await User.findByIdAndDelete(id);
+        if (!deletedUser) {
+            return res.status(404).json({error: "User not found"});
+        }
+
+        res.status(200).json({message: "User deleted successfully", deletedUser});
+    } catch (error) {
+        console.error("[UserController] Error deleting user:", error);
+        res.status(500).json({error: "Internal Server Error"});
+    }
+};
+
+
+module.exports = {register, login, findById, findByParams, update, deleteUser};

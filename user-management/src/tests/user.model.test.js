@@ -10,6 +10,7 @@ describe("User Model", () => {
     });
     afterAll(async () => {
         User.deleteMany({});
+        await mongoose.connection.close();
     })
     it("should create and save a user successfully", async () => {
         const userData = {

@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 describe("User API - Update", () => {
-    let user, admin, adminToken, userToken;
+    let user1, user, admin, adminToken, userToken;
 
     beforeAll(async () => {
         await mongoose.connect("mongodb://mongo:27017/userdb", {useNewUrlParser: true, useUnifiedTopology: true});
@@ -30,12 +30,20 @@ describe("User API - Update", () => {
             role: "Admin",
         });
 
+        user1 = await User.create({
+            name: "Test User1",
+            email: "testUser1@test.com",
+            password: hashedPassword,
+            role: "SalesRep",
+        });
+
         // Generate tokens
         adminToken = jwt.sign({userId: admin._id, role: "Admin"}, process.env.JWT_SECRET, {expiresIn: "12h"});
         userToken = jwt.sign({userId: user._id, role: "SalesRep"}, process.env.JWT_SECRET, {expiresIn: "12h"});
     });
 
     afterAll(async () => {
+        await User.deleteMany({});
         await mongoose.connection.close();
     });
 
@@ -51,7 +59,7 @@ describe("User API - Update", () => {
 
     test("Should not allow a regular user to update another user", async () => {
         const response = await request(app)
-            .put(`/users/update/${admin.id}`)
+            .put(`/users/update/${admin._id}`)
             .set("x-access-token", userToken)
             .send({name: "Hacker User"});
 
@@ -86,5 +94,41 @@ describe("User API - Update", () => {
 
         expect(response.status).toBe(404);
         expect(response.body.message).toBe("User not found");
+    });
+
+    test("Delete should return 404 if user does not exist", async () => {
+        const response = await request(app)
+            .delete(`/users/${new mongoose.Types.ObjectId()}`)
+            .set("x-access-token", adminToken)
+
+        expect(response.status).toBe(404);
+        expect(response.body.error).toBe("User not found");
+    });
+
+    test("Delete should return 403 if non admin user tries deleting another user", async () => {
+        const response = await request(app)
+            .delete(`/users/${admin._id}`)
+            .set("x-access-token", userToken)
+
+        expect(response.status).toBe(403);
+        expect(response.body.error).toBe("Forbidden: You can only delete your own account");
+    });
+
+    test("Delete should return 200 if admin tries deleting any user", async () => {
+        const response = await request(app)
+            .delete(`/users/${user1._id}`)
+            .set("x-access-token", adminToken)
+
+        expect(response.status).toBe(200);
+        expect(response.body.message).toBe("User deleted successfully");
+    });
+
+    test("Delete should return 200 if user tries deleting themselves", async () => {
+        const response = await request(app)
+            .delete(`/users/${user._id}`)
+            .set("x-access-token", userToken)
+
+        expect(response.status).toBe(200);
+        expect(response.body.message).toBe("User deleted successfully");
     });
 });

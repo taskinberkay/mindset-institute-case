@@ -36,6 +36,8 @@ describe("User API - Update", () => {
             password: hashedPassword,
             role: "SalesRep",
         });
+        console.log(user);
+        console.log(admin);
 
         // Generate tokens
         adminToken = jwt.sign({userId: admin._id, role: "Admin"}, process.env.JWT_SECRET, {expiresIn: "12h"});
@@ -49,7 +51,7 @@ describe("User API - Update", () => {
 
     test("Should update user profile successfully (self-update)", async () => {
         const response = await request(app)
-            .put(`/users/update/${user._id}`)
+            .put(`/users/${user._id}`)
             .set("x-access-token", userToken)
             .send({name: "Updated User"});
 
@@ -59,7 +61,7 @@ describe("User API - Update", () => {
 
     test("Should not allow a regular user to update another user", async () => {
         const response = await request(app)
-            .put(`/users/update/${admin._id}`)
+            .put(`/users/${admin._id}`)
             .set("x-access-token", userToken)
             .send({name: "Hacker User"});
 
@@ -69,7 +71,7 @@ describe("User API - Update", () => {
 
     test("Should allow an admin to update any user", async () => {
         const response = await request(app)
-            .put(`/users/update/${user._id}`)
+            .put(`/users/${user._id}`)
             .set("x-access-token", adminToken)
             .send({name: "Admin Updated User"});
 
@@ -79,7 +81,7 @@ describe("User API - Update", () => {
 
     test("Should return 400 for missing ID in URL", async () => {
         const response = await request(app)
-            .put(`/users/update/`)
+            .put(`/users/`)
             .set("x-access-token", adminToken)
             .send({name: "Should Fail"});
 
@@ -88,7 +90,7 @@ describe("User API - Update", () => {
 
     test("Should return 404 if user does not exist", async () => {
         const response = await request(app)
-            .put(`/users/update/${new mongoose.Types.ObjectId()}`)
+            .put(`/users/${new mongoose.Types.ObjectId()}`)
             .set("x-access-token", adminToken)
             .send({name: "Nonexistent User"});
 

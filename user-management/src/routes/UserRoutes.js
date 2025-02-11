@@ -52,6 +52,8 @@ const router = express.Router();
  *         description: User registered successfully
  *       400:
  *         description: Bad request
+ *       500:
+ *         description: Internal Server Error (Mostly for database errors such as duplicate unique key etc.)
  */
 router.post("/register", register);
 
@@ -82,12 +84,14 @@ router.post("/register", register);
  *         description: Successful login
  *       401:
  *         description: Unauthorized
+ *       500:
+ *         description: Internal Server Error (Any unexpected error)
  */
 router.post("/login", login);
 
 /**
  * @swagger
- * /users/findById/{id}:
+ * /users/{id}:
  *   get:
  *     summary: Get a user by ID (Admin or self only)
  *     tags: [Users]
@@ -139,7 +143,7 @@ router.post("/findByParams", checkForAdminPrivileges, findByParams);
 
 /**
  * @swagger
- * /users/update/{id}:
+ * /users/{id}:
  *   put:
  *     summary: Update a user's details (Admin or self only)
  *     tags: [Users]
@@ -172,11 +176,11 @@ router.post("/findByParams", checkForAdminPrivileges, findByParams);
  *       403:
  *         description: Forbidden
  */
-router.put("/update/:id", checkForAdminPrivileges, update);
+router.put("/:id", checkForAdminPrivileges, update);
 
 /**
  * @swagger
- * /users/delete/{id}:
+ * /users/{id}:
  *   delete:
  *     summary: Delete a user (Admin or self only)
  *     tags: [Users]
@@ -197,6 +201,6 @@ router.put("/update/:id", checkForAdminPrivileges, update);
  *       404:
  *         description: User not found
  */
-router.delete("/delete/:id", checkForAdminPrivileges, deleteUser);
+router.delete("/:id", checkForAdminPrivileges, deleteUser);
 
 module.exports = router;

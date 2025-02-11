@@ -69,6 +69,39 @@ describe("Customer Service API Tests", () => {
         expect(res.body._id).toBe(saleId);
     });
 
+    test("Should update the status of the sale to 'In Contact'", async () => {
+        const res = await request(API_GATEWAY_URL)
+            .put(`/sales/${saleId}/in-contact`)
+            .set("x-access-token", validToken);
+
+        expect(res.statusCode).toBe(200);
+        const update = res.body.updates.pop();
+        expect(update.notes).toBe("Customer contacted.");
+        expect(update.status).toBe("In Contact");
+    });
+
+    test("Should update the status of the sale to 'Agreement'", async () => {
+        const res = await request(API_GATEWAY_URL)
+            .put(`/sales/${saleId}/agreement`)
+            .set("x-access-token", validToken);
+
+        expect(res.statusCode).toBe(200);
+        const update = res.body.updates.pop();
+        expect(update.notes).toBe("Agreement reached.");
+        expect(update.status).toBe("Agreement");
+    });
+
+    test("Should update the status of the sale to 'Closed'", async () => {
+        const res = await request(API_GATEWAY_URL)
+            .put(`/sales/${saleId}/closed`)
+            .set("x-access-token", validToken);
+
+        expect(res.statusCode).toBe(200);
+        const update = res.body.updates.pop();
+        expect(update.notes).toBe("Sale closed.");
+        expect(update.status).toBe("Closed");
+    });
+
     test("Should return 404 for non-existent sale ID", async () => {
         const res = await request(API_GATEWAY_URL)
             .get("/sales/654321abcdef123456789012")

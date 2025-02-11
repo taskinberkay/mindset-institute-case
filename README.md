@@ -1,7 +1,7 @@
 # Mindset Institute Case - Microservices Architecture
 
 This project is a **Node.js microservices** application built with **Express.js** and **MongoDB**, following a
-containerized architecture using **Docker Compose**. It consists of two main services:
+containerized architecture using **Docker Compose**. It consists of three main services:
 
 - **User Management Service** (`user-management`) – Handles user authentication and management.
 - **Customer Management Service** (`customer-management`) – Manages customer data.

@@ -12,7 +12,7 @@ const options = {
         },
         servers: [
             {
-                url: "http://api-gateway:8080",
+                url: "http://localhost:8080",
                 description: "API Gateway (inside Docker)",
             },
         ],

@@ -12,8 +12,12 @@ const options = {
         },
         servers: [
             {
-                url: "http://localhost:8080",
+                url: "http://api-gateway:8080",
                 description: "API Gateway (inside Docker)",
+            },
+            {
+                url: "http://localhost:8080",
+                description: "API Gateway (for local testing)",
             },
         ],
         components: {
@@ -22,12 +26,12 @@ const options = {
                     type: "apiKey",
                     in: "header",
                     name: "x-access-token",
-                    description: "Enter your token in the `x-access-token` header",
+                    description: "Enter your authentication token",
                 },
             },
         },
     },
-    apis: [],
+    apis: [], // No local API files, we fetch from microservices
 };
 
 const swaggerSpec = swaggerJsdoc(options);
@@ -41,15 +45,24 @@ async function fetchMicroservicesDocs() {
 
     const paths = {};
     const schemas = {};
+    const securitySchemes = {};
 
     for (const service of microservices) {
         try {
             const response = await axios.get(service.url);
             const {paths: servicePaths, components} = response.data;
 
+            // Merge paths
             Object.assign(paths, servicePaths);
+
+            // Merge schemas
             if (components?.schemas) {
                 Object.assign(schemas, components.schemas);
+            }
+
+            // Merge security schemes
+            if (components?.securitySchemes) {
+                Object.assign(securitySchemes, components.securitySchemes);
             }
 
             console.log(`[✔] Loaded API docs from ${service.name}`);
@@ -59,7 +72,10 @@ async function fetchMicroservicesDocs() {
     }
 
     swaggerSpec.paths = paths;
-    swaggerSpec.components = {schemas};
+    swaggerSpec.components = {
+        schemas,
+        securitySchemes,
+    };
 
     return swaggerSpec;
 }
@@ -72,7 +88,7 @@ async function setupSwagger(app) {
         res.json(await fetchMicroservicesDocs());
     });
 
-    console.log("📄 Swagger UI available at http://api-gateway:8080/api-docs");
+    console.log("📄 Swagger UI available at http://localhost:8080/api-docs");
 }
 
 module.exports = setupSwagger;

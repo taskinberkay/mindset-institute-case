@@ -1,9 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = require("./routes/UserRoutes");
+const setupSwagger = require("../config/swagger");
 require("dotenv").config();
 
 const app = express();
+setupSwagger(app);
 app.use(express.json());
 app.use("/users", router);
 

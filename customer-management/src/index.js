@@ -1,8 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const customerRoutes = require('./routes/CustomerRoutes');
+const swaggerSetup = require('../config/swagger');
 
 const app = express();
+swaggerSetup(app);
 app.use(express.json());
 app.use("/customers", customerRoutes);
 

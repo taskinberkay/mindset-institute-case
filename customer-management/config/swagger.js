@@ -6,11 +6,11 @@ const options = {
     definition: {
         openapi: "3.0.0",
         info: {
-            title: "User Management API",
+            title: "Customer Management API",
             version: "1.0.0",
-            description: "API documentation for user management service",
+            description: "API documentation for the customer management service",
         },
-        servers: [{url: "http://user-management:3000"}],
+        servers: [{url: "http://customer-management:3001"}],
         components: {
             securitySchemes: {
                 AccessToken: {
@@ -21,29 +21,33 @@ const options = {
                 },
             },
             schemas: {
-                User: {
+                Customer: {
                     type: "object",
-                    required: ["name", "email", "password"],
+                    required: ["name", "email", "phone", "company"],
                     properties: {
                         name: {
                             type: "string",
-                            description: "User's full name",
+                            description: "Customer's full name",
                         },
                         email: {
                             type: "string",
                             format: "email",
-                            description: "User's email address",
+                            description: "Customer's email address",
                         },
-                        password: {
+                        phone: {
                             type: "string",
-                            format: "password",
-                            description: "User's password (hashed in storage)",
+                            description: "Customer's phone number",
                         },
-                        role: {
+                        company: {
                             type: "string",
-                            enum: ["Admin", "SalesRep"],
-                            default: "SalesRep",
-                            description: "User's role for authorization purposes",
+                            description: "Company the customer is associated with",
+                        },
+                        notes: {
+                            type: "array",
+                            items: {
+                                type: "string",
+                            },
+                            description: "Additional notes about the customer",
                         },
                     },
                 },
@@ -52,7 +56,6 @@ const options = {
     },
     apis: ["./src/routes/*.js"],
 };
-
 
 // Generate the OpenAPI specification
 const swaggerSpec = swaggerJsdoc(options);
@@ -63,7 +66,7 @@ const setupSwagger = (app) => {
     app.get("/api-docs-json", (req, res) => {
         res.json(swaggerSpec);
     });
-    console.log("📄 Swagger UI available at http://user-management:3000/api-docs");
+    console.log("📄 Swagger UI available at http://customer-management:3001/api-docs");
 };
 
 module.exports = setupSwagger;

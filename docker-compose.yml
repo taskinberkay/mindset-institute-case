@@ -51,6 +51,10 @@ services:
     build: ./api-gateway
     ports:
       - "8080:8080"
+    depends_on:
+      - user-management
+      - customer-management
+      - sales-tracking
 
   mongo:
     image: mongo
